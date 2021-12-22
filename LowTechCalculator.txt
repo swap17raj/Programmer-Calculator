@@ -1,0 +1,132 @@
+
+   
+//>>>  LowTechProgrammerCalculator >>>
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    File Name:  Assessment.c
+    Author:     SRaj
+    Date:       22/12/2021
+    Modified:   Name or None
+    
+
+    Description: *** Designing of Low Tech Programmer Calculator which takes an user input 
+	                 with the help of input knobs and output will be represented via LEDs 
+					 as each LED will represent a bit of signed 8bits. ***
+      
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+
+// Preprocessor >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#include <stdio.h>
+
+// Library >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#include <stdbool.h>
+
+// Constants >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#define LEFTMASK 15         //Masking value for getting the values of right operand and left operand
+#define FOURBITSHIFT 4      //To move the pointer 4 bits 
+#define ONEBITSHIFT 1		//To move the pointer 4 bits 
+#define POSITIVELIMIT 127   //To check the exceeding limit of input value
+#define NEGATIVELIMIT -128	//To check the exceeding limit of input value
+#define ERROR 0   		//For the calculated result
+
+// Globals >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+int left_operand=0, right_operand=0, add=0, multi=0, sub=0, div=0; //To store the values after seperating from the user input
+
+
+// Functions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+/*>>> readKnobInputs >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Author:     SRaj
+Date:       22/12/2021
+Modified:   Name or None
+Desc:       Reading and validating the user Input
+Input:      Pointer to store values upon successful read
+Returns:    True if read was successful, false otherwise
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+bool readKnobInputs(int *dataptr){
+
+    left_operand=0, right_operand=0, add=0, multi=0, sub=0, div=0; 			//Initializing the value to clear previous values
+	
+    left_operand = (*dataptr)&LEFTMASK;                            			//Seperating the left operand value from 0-3 bits
+    *dataptr = (*dataptr)>>FOURBITSHIFT;						   			//Moving the pointer 4 bits to the left
+
+    add = ((*dataptr)&1); 										   			//Seperating the left operand value from 4rth bits
+	*dataptr = (*dataptr)>>ONEBITSHIFT;                            			//Moving the pointer 1 bit to the left
+    multi = ((*dataptr)&1); 									   			//Seperating the left operand value from 5th bits  
+	*dataptr = (*dataptr)>>ONEBITSHIFT;
+    sub = ((*dataptr)&1);   									   			//Seperating the left operand value from 6th bits
+	*dataptr = (*dataptr)>>ONEBITSHIFT;
+    div = ((*dataptr)&1);   									   			//Seperating the left operand value from 7th bits
+	*dataptr = (*dataptr)>>ONEBITSHIFT;
+
+    right_operand = (*dataptr)&LEFTMASK;									//Seperating the left operand value from 8-11 bits
+    *dataptr = (*dataptr)>>FOURBITSHIFT;
+	
+	//Checking if more than one operator bit is ON, none of the operator bit is ON and denominator is zero
+	if(add + multi + sub + div > 1 || add + multi + sub + div == 0 || (right_operand==0 && div == 1))      
+		return false;
+
+    printf("Left_operand %d, right_operand %d\n", left_operand, right_operand); //Display the values obtained
+    printf("add=%d, sub=%d, multi=%d, div=%d \n", add, sub, multi, div);
+    return true;
+}
+
+/*>>> writeLedOutputs>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Author:     SRaj
+Date:       22/12/2021
+Modified:   Name or None
+Desc:       Writing the output to display LEDs 
+Input:      Input value to write to display LEDs
+Returns:    N/A
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+void writeLedOutputs(int data){
+
+    if( data > POSITIVELIMIT || data < NEGATIVELIMIT || data == ERROR){       //Checking if the calculated result is between limits of the led display
+        data = 1;											//Error bit activated
+    }
+    else
+        data = data<<ONEBITSHIFT;
+
+    int error = data&1;                                      //Seperating error bit
+    data = data>>ONEBITSHIFT;
+
+    printf("LED Display is : ");
+
+    for(int i=7;i>=0;i--){									//Activating bits of led display 
+        if(data&(1<<i))
+            printf("1 ");
+        else printf("0 ");
+    }
+    printf(" %d\n", error);
+
+}
+
+/*>>> MAIN: FUNCTION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+int main()
+{
+    int a, result=0;                                                 
+
+    printf("Enter the knob input : ");						//User input value from the knobs
+    scanf("%d", &a);							
+
+    if (!readKnobInputs(&a) )								//Calling the function to validate the user input
+        {
+            printf("Wrong input.\n");
+	     writeLedOutputs(ERROR);
+            return 1;										//Error bit set to 1
+        }		
+
+    if(add) result = left_operand + right_operand;          //Calculating the result of the input from knobs
+    else if(sub) result = left_operand - right_operand;		
+    else if(multi) result = left_operand * right_operand;
+    else result = left_operand / right_operand;
+
+    writeLedOutputs(result);								//Calling the function to write into led display
+
+
+    return 0;
+}

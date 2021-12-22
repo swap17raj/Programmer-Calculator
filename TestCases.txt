@@ -1,0 +1,110 @@
+
+
+TEST CASES
+----------
+
+Addition case:
+  Inputs:
+  - Left Operand Knob = 2,
+  - Operator Knob = "+",
+  - Right Operand Knob = 3
+  Outputs:
+  - Result LEDs should display 5 in binary as the result, error LED should be OFF
+
+
+Multiplication Case 1
+  Inputs:
+  - Left Operand Knob = 3
+  - Operator Knob = "x"
+  - Right Operand Knob = 3
+  Outputs:
+  - Result LEDs should display 9 in binary as the result, error LED should be OFF
+
+
+Multiplication Case 2
+  Inputs:
+  - Left Operand Knob = 11
+  - Operator Knob = "x"
+  - Right Operand Knob = 12
+  Outputs:
+  - Result LEDs should not display as the result, error LED should be ON
+
+Multiplication Case 3:
+  Inputs:
+  - Left Operand Knob = 0
+  - Operator Knob = "x"
+  - Right Operand Knob = 12
+  Outputs:
+  - Result LEDs should not display as the result, error LED should be ON
+
+Division case 1:
+  Inputs: 
+  - Left Operand Knob = 6
+  - Operator Knob = "/"
+  - Right Operand Knob = 2
+  Outputs:
+  - Result LEDs should display 3 in binary as the result, error LED should be OFF
+
+
+Division case 2:
+  Inputs: 
+  - Left Operand Knob = 5
+  - Operator Knob = "/"
+  - Right Operand Knob = 0
+  Outputs:
+  - Result LEDs should not display as the result, error LED should be ON
+
+
+Division case 3:
+  Inputs: 
+  - Left Operand Knob = 0
+  - Operator Knob = "/"
+  - Right Operand Knob = 0
+  Outputs:
+  - Result LEDs should not display as the result, error LED should be ON
+
+
+Subtraction case 1:
+  Inputs: 
+  - Left Operand Knob = 5
+  - Operator Knob = "-"
+  - Right Operand Knob = 5
+  Outputs:
+  - Result LEDs should not display as the result, error LED should be ON
+
+
+Subtraction case 2:
+  Inputs: 
+  - Left Operand Knob = 6
+  - Operator Knob = "-"
+  - Right Operand Knob = 2
+  Outputs:
+  - Result LEDs should display 4 in binary as the result, error LED should be OFF
+
+
+Subtraction case 3:
+  Inputs: 
+  - Left Operand Knob = 0
+  - Operator Knob = "-"
+  - Right Operand Knob = 2
+  Outputs:
+  - Result LEDs should display -2 in binary as the result, error LED should be OFF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
